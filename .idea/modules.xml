@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/VizelTipCalculator.iml" filepath="$PROJECT_DIR$/VizelTipCalculator.iml" />
+      <module fileurl="file://$PROJECT_DIR$/VizelTipCalcRefactor.iml" filepath="$PROJECT_DIR$/VizelTipCalcRefactor.iml" />
     </modules>
   </component>
 </project>

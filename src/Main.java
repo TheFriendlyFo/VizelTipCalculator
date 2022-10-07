@@ -4,25 +4,29 @@ import java.util.ArrayList;
 
 public class Main {
 //    Displays an inputted order nicely:
-    public static void dispOrder(ArrayList<Dish> order) {
-        double totalPrice = 0;
-
+    public static void dispOrder(TipCalc order) {
         System.out.println("\nYou have ordered:\n");
+        ArrayList<Dish> dishes = order.getDishes();
 
-        for (int i=0; i<order.size(); i++) {
-            Dish dish = order.get(i);
-            totalPrice += dish.totalPrice;
-            dish.printData(i + 1);
+        for (int i=0; i<dishes.size(); i++) {
+            dishes.get(i).printData(i + 1);
         }
 
-        System.out.printf("In total your order comes out to $%s0.\n", totalPrice);
+        System.out.printf("In total your order comes out to $%s0.\n", order.getTotalBefore());
     }
 
     public static void main(String[] args) {
         // Lists to store the dishes in the order:
-        ArrayList<Dish> order = new ArrayList<>();
+        TipCalc calc;
         DecimalFormat formatter = new DecimalFormat("0.00");
         Scanner input = new Scanner(System.in);
+
+        System.out.print("Enter number of people to split the bill: ");
+        int numPeople = input.nextInt();
+        System.out.print("Enter tip percent (Whole number): %");
+        int tipPercent = input.nextInt();
+
+        calc = new TipCalc(numPeople, tipPercent);
 
         boolean ordering = true;
         String selection;
@@ -60,20 +64,21 @@ public class Main {
                     System.out.print("\nHow many platters would you like to order: ");
                     dishAmt = input.nextInt();
                     System.out.println("Excellent choice.");
-                    order.add(new Dish(dishName, dishPrice, dishAmt));
+
+                    calc.addDish(dishName, dishPrice, dishAmt);
                     input.nextLine();
                     input.nextLine();
                 }
                 case "2" -> {
                     // If option 2 is chosen, the order is shown to the user.
-                    dispOrder(order);
+                    dispOrder(calc);
                     input.nextLine();
                 }
                 case "3" -> {
                     // If option 3 is chosen, the user is prompted to remove an item from their order.
-                    dispOrder(order);
+                    dispOrder(calc);
                     System.out.print("\nWhich item would you like me to take off of the list? (Num): ");
-                    order.remove(input.nextInt() - 1);
+                    calc.remove(input.nextInt() - 1);
                     input.nextLine();
                     System.out.println("\n\nUnderstandable, it will be swiftly removed.");
                     input.nextLine();
@@ -81,7 +86,7 @@ public class Main {
                 case "4" -> {
                     // Ends the loop after displaying the order one last time:
                     System.out.println("\nI shall quickly go over your order once more.");
-                    dispOrder(order);
+                    dispOrder(calc);
                     System.out.println("It will be ready soon.");
                     ordering = false;
                 }
@@ -94,30 +99,13 @@ public class Main {
         System.out.println("\n------------------------\n\n");
 
 
-        // Actual tip calculator:
-        double price = 0;
-        // Gets the total order price:
-        for (Dish dish : order) {
-            price += dish.totalPrice;
-        }
-
-        System.out.print("Enter number of people to split the bill: ");
-        int numPeople = input.nextInt();
-        System.out.print("Enter tip percent: ");
-        int tipPercent = input.nextInt();
-
-        double tip = price * tipPercent / 100;
-        double totalPrice = price + tip;
-        double tipPer = tip / numPeople;
-        double totalPer = totalPrice / numPeople;
-
         System.out.println("\n>------------------<");
-        dispOrder(order);
+        dispOrder(calc);
 
-        System.out.println("\nTotal bill: $" + formatter.format(totalPrice));
-        System.out.println("Total tip: $" + formatter.format(tip));
-        System.out.println("Bill per person: $" + formatter.format(totalPer));
-        System.out.println("Tip per person: $" + formatter.format(tipPer));
+        System.out.println("\nTotal bill: $" + formatter.format(calc.totalBill()));
+        System.out.println("Total tip: $" + formatter.format(calc.totalTip()));
+        System.out.println("Bill per person: $" + formatter.format(calc.billPer()));
+        System.out.println("Tip per person: $" + formatter.format(calc.tipPer()));
         System.out.println("\n>------------------<\n");
     }
 }
